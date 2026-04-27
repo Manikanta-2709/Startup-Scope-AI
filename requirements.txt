@@ -2,7 +2,9 @@ flask
 flask-cors
 pymongo
 openai
+google-generativeai
 firecrawl-py
 python-dotenv
 pydantic
 requests
+gunicorn
