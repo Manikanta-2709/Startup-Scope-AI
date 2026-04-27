@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+{% block title %}Mentors{% endblock %}
+{% block content %}
+<div class="app-divider" style="margin-top: 0;">
+    <h2>Book a Mentor Session</h2>
+    <p style="text-align: center; color: var(--text-dim); margin-bottom: 24px;">Get 1-on-1 guidance from operators, technical leaders, and fundraising experts.</p>
+</div>
+
+<div class="filter-bar reveal">
+    <input type="text" id="mentor-search" placeholder="Search by mentor name, role, or specialty">
+</div>
+
+<section class="mentors-container">
+    <div class="mentors-grid" id="mentors-grid">
+        {% for mentor in mentors %}
+        <div class="mentor-card reveal mentor-search-card" data-search="{{ (mentor.name ~ ' ' ~ mentor.role ~ ' ' ~ mentor.specialty)|lower }}">
+            <img src="{{ mentor.photo }}" alt="{{ mentor.name }}" class="mentor-avatar">
+            <h3>{{ mentor.name }}</h3>
+            <span class="mentor-role">{{ mentor.role }}</span>
+            <p class="mentor-specialty">{{ mentor.specialty }}</p>
+            <p class="mentor-bio">{{ mentor.bio }}</p>
+            <div class="mentor-stats">
+                <span>{{ mentor.rating }} rating</span>
+                <span>{{ mentor.sessions }} sessions</span>
+            </div>
+            <button class="btn-small btn-primary" type="button" onclick="openBookingModal('{{ mentor.id }}', '{{ mentor.name }}')">Book Session</button>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<div id="booking-modal" class="hidden auth-overlay">
+    <div class="auth-modal glass reveal" style="max-width: 520px;">
+        <button onclick="closeBookingModal()" class="close-btn" type="button" aria-label="Close booking form">&times;</button>
+        <h2 style="margin-bottom: 10px;">Book Session</h2>
+        <p style="text-align: center; color: var(--primary); font-weight: 600; margin-bottom: 25px;">with <span id="modal-mentor-name"></span></p>
+
+        <input type="hidden" id="modal-mentor-id">
+
+        <div class="form-group">
+            <label for="booking-topic">Topic</label>
+            <input type="text" id="booking-topic" placeholder="e.g. Pitch deck review" required>
+        </div>
+
+        <div class="split-grid">
+            <div class="form-group">
+                <label for="booking-date">Preferred Date</label>
+                <input type="date" id="booking-date" required>
+            </div>
+            <div class="form-group">
+                <label for="booking-time">Preferred Time</label>
+                <input type="time" id="booking-time" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="booking-format">Session Format</label>
+            <select id="booking-format">
+                <option value="Video Call">Video Call</option>
+                <option value="Phone Call">Phone Call</option>
+                <option value="Async Review">Async Review</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="booking-message">Message</label>
+            <textarea id="booking-message" rows="3" placeholder="Briefly describe what you want to discuss..." required></textarea>
+        </div>
+
+        <button class="btn-primary glow-button" style="width: 100%; margin-top: 10px;" onclick="submitBooking()" type="button">Confirm Request</button>
+        <button class="btn-small booking-cancel-btn" onclick="closeBookingModal()" type="button">Close</button>
+        <p id="booking-status" style="margin-top: 15px; text-align: center; font-size: 0.9rem;"></p>
+    </div>
+</div>
+
+<script>
+    function openBookingModal(mentorId, mentorName) {
+        document.getElementById('modal-mentor-id').value = mentorId;
+        document.getElementById('modal-mentor-name').textContent = mentorName;
+        document.getElementById('booking-topic').value = '';
+        document.getElementById('booking-date').value = '';
+        document.getElementById('booking-time').value = '';
+        document.getElementById('booking-format').value = 'Video Call';
+        document.getElementById('booking-message').value = '';
+        document.getElementById('booking-status').textContent = '';
+        document.getElementById('booking-modal').classList.remove('hidden');
+        document.getElementById('booking-modal').style.display = 'flex';
+    }
+
+    function closeBookingModal() {
+        document.getElementById('booking-modal').classList.add('hidden');
+        document.getElementById('booking-modal').style.display = 'none';
+    }
+
+    async function submitBooking() {
+        const btn = document.querySelector('#booking-modal .btn-primary');
+        const status = document.getElementById('booking-status');
+        const payload = {
+            mentor_id: document.getElementById('modal-mentor-id').value,
+            mentor_name: document.getElementById('modal-mentor-name').textContent,
+            topic: document.getElementById('booking-topic').value.trim(),
+            preferred_date: document.getElementById('booking-date').value.trim(),
+            preferred_time: document.getElementById('booking-time').value.trim(),
+            session_format: document.getElementById('booking-format').value.trim(),
+            message: document.getElementById('booking-message').value.trim()
+        };
+
+        const missingFields = [
+            ['topic', 'topic'],
+            ['preferred_date', 'preferred date'],
+            ['preferred_time', 'preferred time'],
+            ['message', 'message']
+        ].filter(([key]) => !payload[key]).map(([, label]) => label);
+
+        if (missingFields.length) {
+            status.style.color = '#ef4444';
+            status.textContent = `Please fill: ${missingFields.join(', ')}.`;
+            return;
+        }
+
+        btn.disabled = true;
+        btn.textContent = 'Submitting...';
+
+        try {
+            const res = await fetch('/book-session', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            if (res.ok) {
+                status.style.color = '#10b981';
+                status.textContent = 'Booking requested successfully.';
+                setTimeout(closeBookingModal, 1600);
+            } else {
+                status.style.color = '#ef4444';
+                status.textContent = data.error || 'Failed to book session. Are you logged in?';
+            }
+        } catch (e) {
+            status.style.color = '#ef4444';
+            status.textContent = 'Network error.';
+        } finally {
+            btn.disabled = false;
+            btn.textContent = 'Confirm Request';
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const searchInput = document.getElementById('mentor-search');
+        const bookingModal = document.getElementById('booking-modal');
+
+        if (bookingModal) {
+            bookingModal.addEventListener('click', (event) => {
+                if (event.target === bookingModal) closeBookingModal();
+            });
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape' && !bookingModal.classList.contains('hidden')) {
+                    closeBookingModal();
+                }
+            });
+        }
+
+        if (!searchInput) return;
+
+        searchInput.addEventListener('input', () => {
+            const term = searchInput.value.trim().toLowerCase();
+            document.querySelectorAll('.mentor-search-card').forEach(card => {
+                const haystack = card.dataset.search || '';
+                card.classList.toggle('hidden', term && !haystack.includes(term));
+            });
+        });
+    });
+</script>
+{% endblock %}

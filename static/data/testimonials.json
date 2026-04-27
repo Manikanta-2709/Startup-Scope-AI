@@ -1,0 +1,23 @@
+[
+    {
+        "name": "Sneha Iyer",
+        "role": "Founder, FreshRoute",
+        "text": "StartupScope told me my original idea had too many competitors in metro cities. I pivoted to Tier-2 towns and got my first 500 users in 3 weeks.",
+        "avatar": "https://api.dicebear.com/9.x/notionists/svg?seed=sneha",
+        "score": "7.8 → 8.9 after pivot"
+    },
+    {
+        "name": "Vikram Das",
+        "role": "CTO, CodeBridge",
+        "text": "The competitor analysis caught a niche player I had completely missed. Saved us months of building the wrong differentiator.",
+        "avatar": "https://api.dicebear.com/9.x/notionists/svg?seed=vikram",
+        "score": "8.2"
+    },
+    {
+        "name": "Ananya Rao",
+        "role": "Solo Founder",
+        "text": "I used to spend weeks researching before starting anything. Now I validate in 5 seconds, tweak, and validate again. It changed how I think about ideas.",
+        "avatar": "https://api.dicebear.com/9.x/notionists/svg?seed=ananya",
+        "score": "6.5 → 8.1"
+    }
+]

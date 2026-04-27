@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StartupScope AI - {% block title %}{% endblock %}</title>
+    <meta name="description" content="Validate startup ideas, book mentor sessions, and turn founder research into clear next steps with StartupScope AI.">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+    <!-- Custom Cursor -->
+    <div class="cursor-outer"></div>
+    <div class="cursor-inner"></div>
+
+    <!-- Live Animated Fluid Gradient Background -->
+    <div class="mesh-background">
+        <div class="morphing-blob blob-1"></div>
+        <div class="morphing-blob blob-2"></div>
+        <div class="morphing-blob blob-3"></div>
+        <div class="grid-overlay"></div>
+    </div>
+    
+    <nav class="premium-nav">
+        <div class="nav-container">
+            <div class="logo">
+                <a href="/" class="logo-link">
+                    <span class="logo-icon">🚀</span>
+                    <span class="logo-text">StartupScope <span class="accent">AI</span></span>
+                </a>
+            </div>
+            <div class="nav-links" id="site-nav-links">
+                <a href="/" class="nav-link">Home</a>
+                <a href="/chat-page" class="nav-link">AI Consultant</a>
+                {% if session.get('is_admin') %}
+                    <a href="/admin/dashboard" class="nav-link admin-link">Admin</a>
+                {% endif %}
+            </div>
+            <div class="nav-actions">
+                {% if session.get('user_id') %}
+                    <div class="user-profile">
+                        <span id="user-greeting">Hi, {{ session.get('name', 'User').split(' ')[0] }}</span>
+                        {% if not session.get('is_admin') %}
+                            <a href="/account"><button class="btn-dashboard" type="button">Account</button></a>
+                        {% endif %}
+                        <a href="/dashboard"><button class="btn-dashboard">Dashboard</button></a>
+                        <button id="logout-btn" class="btn-logout" type="button">Logout</button>
+                    </div>
+                {% else %}
+                    <a href="/login-page" class="nav-link">Login</a>
+                    <a href="/register-page"><button class="btn-primary glow-button">Join Now</button></a>
+                {% endif %}
+            </div>
+            <button class="mobile-menu-toggle" id="mobile-menu-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="site-nav-links">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    
+    <script src="{{ url_for('static', filename='js/app.js') }}?v=1.1"></script>
+    <script>
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const coarsePointer = window.matchMedia('(pointer: coarse)').matches;
+
+        // Custom Cursor Logic
+        const cursorInner = document.querySelector('.cursor-inner');
+        const cursorOuter = document.querySelector('.cursor-outer');
+
+        if (!coarsePointer && !prefersReducedMotion) {
+            document.addEventListener('mousemove', (e) => {
+                cursorInner.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+                cursorOuter.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+            });
+
+            document.addEventListener('mousedown', () => {
+                cursorOuter.style.transform += ' scale(0.8)';
+                cursorInner.style.transform += ' scale(1.5)';
+            });
+
+            document.addEventListener('mouseup', () => {
+                cursorOuter.style.transform = cursorOuter.style.transform.replace(' scale(0.8)', '');
+                cursorInner.style.transform = cursorInner.style.transform.replace(' scale(1.5)', '');
+            });
+
+            const hoverables = document.querySelectorAll('a, button, .nav-link, .glow-button');
+            hoverables.forEach(el => {
+                el.addEventListener('mouseenter', () => cursorOuter.classList.add('cursor-hover'));
+                el.addEventListener('mouseleave', () => cursorOuter.classList.remove('cursor-hover'));
+            });
+
+            const magneticElements = document.querySelectorAll('.glow-button, .btn-dashboard, .logo-link');
+            magneticElements.forEach(el => {
+                el.addEventListener('mousemove', (e) => {
+                    const rect = el.getBoundingClientRect();
+                    const x = e.clientX - rect.left - rect.width / 2;
+                    const y = e.clientY - rect.top - rect.height / 2;
+                    el.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px) scale(1.05)`;
+                });
+                el.addEventListener('mouseleave', () => {
+                    el.style.transform = 'translate(0, 0) scale(1)';
+                });
+            });
+        } else {
+            document.body.classList.add('touch-ui');
+        }
+
+        // Scroll-triggered reveal animations
+        document.addEventListener('DOMContentLoaded', () => {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry, i) => {
+                    if (entry.isIntersecting) {
+                        const delay = entry.target.dataset.delay || 0;
+                        setTimeout(() => entry.target.classList.add('visible'), delay);
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.reveal').forEach((el, i) => {
+                el.dataset.delay = (i % 4) * 80;
+                observer.observe(el);
+            });
+
+            if (!prefersReducedMotion) {
+                window.addEventListener('scroll', () => {
+                    const scrolled = window.pageYOffset;
+                    document.querySelectorAll('[data-parallax]').forEach(el => {
+                        const speed = el.dataset.parallax;
+                        el.style.transform = `translateY(${scrolled * speed}px)`;
+                    });
+
+                    const decors = document.querySelectorAll('.hero-decor');
+                    decors.forEach((decor, i) => {
+                        const speed = (i + 1) * 0.1;
+                        decor.style.transform = `translateY(${scrolled * speed}px) rotate(${scrolled * 0.05}deg)`;
+                    });
+                });
+            }
+
+            // Smooth scroll for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(a => {
+                a.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const target = document.querySelector(a.getAttribute('href'));
+                    if (target) target.scrollIntoView({ behavior: 'smooth' });
+                });
+            });
+        });
+    </script>
+</body>
+</html>

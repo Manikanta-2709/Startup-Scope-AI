@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+{% block content %}
+<div style="display: flex; justify-content: center; align-items: center; min-height: 70vh;">
+    <div class="auth-modal glass reveal" style="position: static; max-width: 400px;">
+        <h2 style="text-align: center; margin-bottom: 30px; font-weight: 800; letter-spacing: -1px;">Welcome Back</h2>
+        <div id="onboarding-idea-banner" class="inline-banner hidden"></div>
+        <form id="standalone-login-form">
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" id="auth-email" required placeholder="name@company.com">
+            </div>
+            <div class="form-group" style="margin-top: 20px;">
+                <label>Password</label>
+                <input type="password" id="auth-password" required placeholder="••••••••">
+            </div>
+            <p id="auth-error" class="error-msg hidden"></p>
+            <button type="submit" id="auth-submit-btn" class="glow-button"
+                style="width: 100%; margin-top: 25px;">Login</button>
+        </form>
+        <p class="auth-switch" style="margin-top: 16px;">
+            <a href="/forgot-password-page">Forgot your password?</a>
+        </p>
+        <p class="auth-switch" style="margin-top: 30px;">
+            Don't have an account?
+            <a id="login-to-register-link" href="/register-page">Create one now</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

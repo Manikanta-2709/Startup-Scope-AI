@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block title %}Events & Bootcamps{% endblock %}
+{% block content %}
+<div class="app-divider" style="margin-top: 0;">
+    <h2>Upcoming Events & Bootcamps</h2>
+    <p style="text-align: center; color: var(--text-dim); margin-bottom: 24px;">Join intensive sessions to refine your ideas, sharpen your pitch, and meet mentors.</p>
+</div>
+
+<div class="filter-bar reveal">
+    <input type="text" id="event-search" placeholder="Search by title, mentor, or event type">
+    <select id="event-status-filter">
+        <option value="all">All statuses</option>
+        <option value="upcoming">Upcoming</option>
+        <option value="completed">Completed</option>
+    </select>
+</div>
+
+<section class="events-container">
+    <div class="events-grid" id="events-grid">
+        {% for event in events %}
+        {% set registered = event.registered|default(0, true)|int %}
+        {% set spots = event.spots|default(0, true)|int %}
+        {% set status = event.status|default('upcoming', true) %}
+        {% set is_full = spots > 0 and registered >= spots %}
+        <div class="event-card reveal event-search-card" data-search="{{ (event.title|default('', true) ~ ' ' ~ event.mentor|default('', true) ~ ' ' ~ event.type|default('', true))|lower }}" data-status="{{ status }}">
+            <div class="event-type-badge">{{ event.type|default('Event', true) }}</div>
+            <h3>{{ event.title|default('Untitled event', true) }}</h3>
+            <div class="event-meta">
+                <span>{{ event.date|default('Date TBA', true) }}</span>
+                <span>{{ event.time|default('Time TBA', true) }}</span>
+                <span>{{ registered }}/{{ spots }} registered</span>
+            </div>
+            <p>{{ event.description|default('Details will be announced soon.', true) }}</p>
+            <div class="event-mentor">Led by <strong>{{ event.mentor|default('StartupScope team', true) }}</strong></div>
+            <div class="event-actions-row">
+                <span class="tracking-status {{ 'status-upcoming' if status == 'upcoming' else 'status-approved' if status == 'completed' else 'status-pending' }}">{{ status }}</span>
+                {% if status != 'upcoming' %}
+                <button class="btn-small" type="button" disabled>Closed</button>
+                {% elif is_full %}
+                <button class="btn-small" type="button" disabled>Full</button>
+                {% else %}
+                <button class="btn-small btn-primary" id="btn-{{ event.id }}" type="button" onclick='registerEvent({{ event.id|tojson }}, {{ event.title|default("Event", true)|tojson }}, this)'>Register Now</button>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<script>
+    async function registerEvent(eventId, eventTitle, btnElement) {
+        const originalText = btnElement.innerText;
+        btnElement.innerText = 'Processing...';
+        btnElement.disabled = true;
+
+        try {
+            const res = await fetch('/register-event', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ event_id: eventId, event_title: eventTitle })
+            });
+            const data = await res.json();
+            if (res.ok) {
+                btnElement.innerText = 'Registered';
+                btnElement.style.background = 'var(--success)';
+                setTimeout(() => window.location.reload(), 900);
+            } else {
+                btnElement.innerText = originalText;
+                btnElement.disabled = false;
+                alert('Failed to register: ' + (data.error || 'Are you logged in?'));
+            }
+        } catch (e) {
+            btnElement.innerText = originalText;
+            btnElement.disabled = false;
+            alert('Network error. Please try again.');
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const searchInput = document.getElementById('event-search');
+        const statusFilter = document.getElementById('event-status-filter');
+        const cards = document.querySelectorAll('.event-search-card');
+
+        function applyFilters() {
+            const term = searchInput.value.trim().toLowerCase();
+            const status = statusFilter.value;
+            cards.forEach(card => {
+                const matchesTerm = !term || (card.dataset.search || '').includes(term);
+                const matchesStatus = status === 'all' || card.dataset.status === status;
+                card.classList.toggle('hidden', !(matchesTerm && matchesStatus));
+            });
+        }
+
+        searchInput.addEventListener('input', applyFilters);
+        statusFilter.addEventListener('change', applyFilters);
+    });
+</script>
+{% endblock %}

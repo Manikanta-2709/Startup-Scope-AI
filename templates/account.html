@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Account{% endblock %}
+{% block content %}
+<section class="page-shell">
+    <div class="page-header reveal">
+        <span class="page-kicker">Account</span>
+        <h1>Manage your profile</h1>
+        <p class="page-lead">Keep your founder profile current and secure before sharing ideas, mentor requests, and reports.</p>
+    </div>
+
+    <div class="account-grid">
+        <div class="page-card glass reveal">
+            <h2>Profile details</h2>
+            <form id="account-profile-form">
+                <div class="form-group">
+                    <label for="account-name">Full Name</label>
+                    <input type="text" id="account-name" value="{{ name }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="account-email">Email Address</label>
+                    <input type="email" id="account-email" value="{{ email }}" required>
+                </div>
+                <p id="account-profile-status" class="form-status hidden"></p>
+                <button type="submit" class="glow-button">Save Profile</button>
+            </form>
+        </div>
+
+        <div class="page-card glass reveal">
+            <h2>Password</h2>
+            <form id="account-password-form">
+                <div class="form-group">
+                    <label for="current-password">Current Password</label>
+                    <input type="password" id="current-password" required>
+                </div>
+                <div class="form-group">
+                    <label for="new-password">New Password</label>
+                    <input type="password" id="new-password" placeholder="Minimum 8 characters" required>
+                </div>
+                <div class="form-group">
+                    <label for="confirm-password">Confirm New Password</label>
+                    <input type="password" id="confirm-password" required>
+                </div>
+                <p id="account-password-status" class="form-status hidden"></p>
+                <button type="submit" class="glow-button">Update Password</button>
+            </form>
+            <p class="auth-switch" style="text-align: left; margin-top: 16px;">
+                Forgot your current password?
+                <a href="/forgot-password-page">Reset it by email</a>
+            </p>
+        </div>
+    </div>
+</section>
+{% endblock %}

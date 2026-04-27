@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Portal - StartupScope AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+    <style>
+        :root {
+            --primary: #8b5cf6;
+            --primary-glow: rgba(139, 92, 246, 0.4);
+            --secondary: #6366f1;
+            --accent: #00f2fe;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --bg-main: #050508;
+            --bg-dark: #000000;
+            --card-bg: rgba(17, 17, 25, 0.7);
+            --card-hover: rgba(26, 26, 38, 0.9);
+            --border-light: rgba(255, 255, 255, 0.08);
+            --border-strong: rgba(255, 255, 255, 0.15);
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+        }
+
+        body { 
+            margin: 0; 
+            font-family: 'Inter', system-ui, sans-serif; 
+            background: var(--bg-main); 
+            color: var(--text-main); 
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Ambient Background Mesh */
+        .admin-mesh {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1;
+            background: radial-gradient(circle at 10% 20%, rgba(139, 92, 246, 0.08) 0%, transparent 40%),
+                        radial-gradient(circle at 90% 80%, rgba(0, 242, 254, 0.05) 0%, transparent 40%);
+            filter: blur(100px);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid var(--border-light);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            padding: 40px 30px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .sidebar-header h2 {
+            margin: 0;
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--text-main);
+            letter-spacing: -0.5px;
+        }
+        
+        .sidebar-header span {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            padding: 30px 15px;
+            flex: 1;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 14px 20px;
+            margin-bottom: 8px;
+            color: var(--text-dim);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border-radius: 10px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: rgba(139, 92, 246, 0.1);
+            color: var(--text-main);
+            box-shadow: inset 0 0 0 1px rgba(139, 92, 246, 0.2);
+        }
+
+        .nav-item.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 15px var(--primary-glow);
+        }
+
+        .nav-item svg {
+            width: 20px;
+            height: 20px;
+            margin-right: 15px;
+            opacity: 0.8;
+        }
+
+        .sidebar-footer {
+            padding: 25px;
+            border-top: 1px solid var(--border-light);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .btn-sidebar {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-strong);
+            color: var(--text-dim);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .btn-sidebar:hover { 
+            background: rgba(255, 255, 255, 0.08); 
+            color: #fff;
+            border-color: var(--text-main);
+        }
+
+        .btn-logout-sidebar {
+            border-color: rgba(239, 68, 68, 0.3);
+            color: var(--danger);
+        }
+
+        .btn-logout-sidebar:hover {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: var(--danger);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            flex: 1;
+            padding: 60px 4%;
+            max-width: 1600px;
+        }
+
+        .top-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 50px;
+        }
+
+        .top-header h1 {
+            margin: 0;
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            background: linear-gradient(to right, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .admin-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 10px 20px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-light);
+            border-radius: 50px;
+        }
+
+        .avatar {
+            width: 36px; height: 36px; border-radius: 50%; 
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex; justify-content: center; align-items: center; font-weight: 800;
+            box-shadow: 0 0 15px var(--primary-glow);
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-light);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, transparent, rgba(255, 255, 255, 0.03));
+            pointer-events: none;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .stat-icon {
+            width: 48px; height: 48px;
+            border-radius: 12px;
+            background: rgba(139, 92, 246, 0.1);
+            color: var(--primary);
+            display: flex; justify-content: center; align-items: center;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+            letter-spacing: -1px;
+        }
+
+        .stat-label {
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Panels & Tables */
+        .panel {
+            background: var(--card-bg);
+            border: 1px solid var(--border-light);
+            border-radius: 24px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            margin-bottom: 40px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .panel-header {
+            padding: 30px;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .panel-header h3 {
+            margin: 0;
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            padding: 18px 30px;
+            text-align: left;
+            background: rgba(0, 0, 0, 0.2);
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        td {
+            padding: 20px 30px;
+            border-bottom: 1px solid var(--border-light);
+            font-size: 0.95rem;
+        }
+
+        tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        /* Buttons & Badges */
+        .btn-action {
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: 1px solid var(--border-strong);
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-main);
+        }
+
+        .btn-approve { 
+            background: var(--success); 
+            color: white; 
+            border: none;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+        .btn-approve:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4); }
+
+        .btn-reject { 
+            background: rgba(239, 68, 68, 0.1); 
+            color: var(--danger); 
+            border: 1px solid rgba(239, 68, 68, 0.2); 
+        }
+        .btn-reject:hover { background: var(--danger); color: white; transform: translateY(-2px); }
+
+        .badge {
+            padding: 6px 14px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .badge.pending { background: rgba(245, 158, 11, 0.1); color: var(--warning); border: 1px solid var(--warning); }
+        .badge.approved, .badge.confirmed { background: rgba(16, 185, 129, 0.1); color: var(--success); border: 1px solid var(--success); }
+        .badge.rejected, .badge.cancelled { background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid var(--danger); }
+
+
+    </style>
+</head>
+<body>
+    <div class="admin-mesh"></div>
+
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>StartupScope <span>Admin</span></h2>
+        </div>
+        <div class="nav-links">
+            <div class="nav-item active" onclick="switchTab('overview', this)">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                Overview
+            </div>
+            <div class="nav-item" onclick="switchTab('bookings', this)">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                Mentor Bookings
+            </div>
+            <div class="nav-item" onclick="switchTab('events', this)">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                Event Registrations
+            </div>
+            <div class="nav-item" onclick="switchTab('users', this)">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                Platform Users
+            </div>
+            <div class="nav-item" onclick="switchTab('manage-mentors', this)">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                Manage Mentors
+            </div>
+            <div class="nav-item" onclick="switchTab('manage-events', this)">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                Manage Events
+            </div>
+        </div>
+        <div class="sidebar-footer">
+            <button class="btn-sidebar" onclick="window.location.href='/'">Go to Main Site</button>
+            <button class="btn-sidebar btn-logout-sidebar" onclick="adminLogout()">Logout</button>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="top-header">
+            <h1 id="page-title">Overview</h1>
+            <div class="admin-profile">
+                <span style="color: var(--text-dim); font-size: 0.9rem;">Administrator</span>
+                <div class="avatar">A</div>
+            </div>
+        </header>
+
+        <style>
+            /* Content Sections */
+            .content-section {
+                display: none;
+                animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            }
+
+            .content-section.active {
+                display: block;
+            }
+
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(20px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+        </style>
+
+        <!-- OVERVIEW TAB -->
+        <section id="tab-overview" class="content-section active">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-value" id="stat-users">0</div>
+                    <div class="stat-label">Total Users</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📅</div>
+                    <div class="stat-value" id="stat-bookings">0</div>
+                    <div class="stat-label">Total Bookings</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🎟️</div>
+                    <div class="stat-value" id="stat-regs">0</div>
+                    <div class="stat-label">Event Regs</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="color: var(--warning); background: rgba(245, 158, 11, 0.1);">⏳</div>
+                    <div class="stat-value" id="stat-pending" style="color: var(--warning);">0</div>
+                    <div class="stat-label">Pending Actions</div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    <h3>Recent Activity</h3>
+                </div>
+                <div style="padding: 30px; text-align: center; color: var(--text-dim);">
+                    <p>Select a tab from the sidebar to manage bookings and users.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- BOOKINGS TAB -->
+        <section id="tab-bookings" class="content-section">
+            <div class="panel">
+                <div class="panel-header">
+                    <h3>Mentor Bookings</h3>
+                    <button class="btn-action btn-approve" onclick="loadBookings()">Refresh</button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date Request</th>
+                            <th>User Info</th>
+                            <th>Mentor</th>
+                            <th>Topic</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bookings-tbody">
+                        <tr><td colspan="6" style="text-align:center; padding: 30px;">Loading data...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- EVENTS TAB -->
+        <section id="tab-events" class="content-section">
+            <div class="panel">
+                <div class="panel-header">
+                    <h3>Event Registrations</h3>
+                    <button class="btn-action btn-approve" onclick="loadRegistrations()">Refresh</button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>User Info</th>
+                            <th>Event Name</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="regs-tbody">
+                        <tr><td colspan="5" style="text-align:center; padding: 30px;">Loading data...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- USERS TAB -->
+        <section id="tab-users" class="content-section">
+            <div class="panel">
+                <div class="panel-header">
+                    <h3>Registered Platform Users</h3>
+                    <button class="btn-action btn-approve" onclick="loadUsers()">Refresh</button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>User ID (UUID)</th>
+                            <th>Full Name</th>
+                            <th>Email Address</th>
+                        </tr>
+                    </thead>
+                    <tbody id="users-tbody">
+                        <tr><td colspan="3" style="text-align:center; padding: 30px;">Loading data...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- MANAGE MENTORS TAB -->
+        <section id="tab-manage-mentors" class="content-section">
+            <div class="panel">
+                <div class="panel-header">
+                    <h3>Manage Mentors</h3>
+                    <div>
+                        <button class="btn-action btn-approve" onclick="loadAdminMentors()">Refresh</button>
+                        <button class="btn-action" style="background: var(--primary); color: white;" onclick="openAddMentorModal()">+ Add Mentor</button>
+                    </div>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Role</th>
+                            <th>Specialty</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="manage-mentors-tbody">
+                        <tr><td colspan="5" style="text-align:center; padding: 30px;">Loading data...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- MANAGE EVENTS TAB -->
+        <section id="tab-manage-events" class="content-section">
+            <div class="panel">
+                <div class="panel-header">
+                    <h3>Manage Events</h3>
+                    <div>
+                        <button class="btn-action btn-approve" onclick="loadAdminEvents()">Refresh</button>
+                        <button class="btn-action" style="background: var(--primary); color: white;" onclick="openAddEventModal()">+ Add Event</button>
+                    </div>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Date & Time</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="manage-events-tbody">
+                        <tr><td colspan="5" style="text-align:center; padding: 30px;">Loading data...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Modal Form: Add/Edit Mentor -->
+    <div id="add-mentor-modal" class="hidden" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8); z-index: 1000; display: flex; justify-content: center; align-items: center; flex-direction: column;">
+        <div style="background: var(--card-bg); padding: 30px; border-radius: 12px; border: 1px solid var(--border-light); width: 90%; max-width: 500px; position: relative;">
+            <button onclick="closeAddMentorModal()" style="position: absolute; top: 10px; right: 15px; background: transparent; border: none; color: var(--text-dim); font-size: 1.5rem; cursor: pointer;">&times;</button>
+            <h3 id="mentor-modal-title" style="margin-top: 0; margin-bottom: 20px;">Add Mentor</h3>
+            <input type="hidden" id="edit-mentor-id">
+            <div class="form-group" style="margin-bottom: 10px;"><input type="text" id="mentor-name" placeholder="Name" required style="width: 100%; padding: 8px;"></div>
+            <div class="form-group" style="margin-bottom: 10px;"><input type="text" id="mentor-role" placeholder="Role (e.g. Founder, Technical Advisor)" required style="width: 100%; padding: 8px;"></div>
+            <div class="form-group" style="margin-bottom: 10px;"><input type="text" id="mentor-specialty" placeholder="Specialty (e.g. Scaling, Full Stack)" required style="width: 100%; padding: 8px;"></div>
+            <div class="form-group" style="margin-bottom: 10px;"><textarea id="mentor-bio" rows="2" placeholder="Bio" required style="width: 100%; padding: 8px;"></textarea></div>
+            <div class="form-group" style="margin-bottom: 10px;"><input type="text" id="mentor-photo" placeholder="Photo URL" style="width: 100%; padding: 8px;"></div>
+            <p id="mentor-form-status" class="form-status hidden" style="margin: 0 0 12px;"></p>
+            <button class="btn-approve" id="mentor-save-btn" style="width: 100%; padding: 10px; border:none; border-radius: 6px; cursor: pointer;" onclick="submitAddMentor()">Save Mentor</button>
+        </div>
+    </div>
+
+    <!-- Modal Form: Add/Edit Event -->
+    <div id="add-event-modal" class="hidden" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8); z-index: 1000; display: flex; justify-content: center; align-items: center; flex-direction: column;">
+        <div style="background: var(--card-bg); padding: 30px; border-radius: 12px; border: 1px solid var(--border-light); width: 90%; max-width: 500px; position: relative;">
+            <button onclick="closeAddEventModal()" style="position: absolute; top: 10px; right: 15px; background: transparent; border: none; color: var(--text-dim); font-size: 1.5rem; cursor: pointer;">&times;</button>
+            <h3 id="event-modal-title" style="margin-top: 0; margin-bottom: 20px;">Add Event</h3>
+            <input type="hidden" id="edit-event-id">
+            <div class="form-group" style="margin-bottom: 10px;"><input type="text" id="event-title" placeholder="Event Title" required style="width: 100%; padding: 8px;"></div>
+            <div class="form-group" style="margin-bottom: 10px;"><input type="text" id="event-type" placeholder="Type (e.g. Bootcamp, Workshop)" required style="width: 100%; padding: 8px;"></div>
+            <div class="form-group" style="margin-bottom: 10px;"><input type="text" id="event-date" placeholder="Date (e.g. Oct 15, 2026)" required style="width: 100%; padding: 8px;"></div>
+            <div class="form-group" style="margin-bottom: 10px;"><input type="text" id="event-time" placeholder="Time (e.g. 10:00 AM EST)" required style="width: 100%; padding: 8px;"></div>
+            <div class="form-group" style="margin-bottom: 10px;"><input type="text" id="event-mentor" placeholder="Mentor Name" required style="width: 100%; padding: 8px;"></div>
+            <div class="form-group" style="margin-bottom: 10px;"><input type="number" id="event-spots" placeholder="Total Spots" min="1" required style="width: 100%; padding: 8px;"></div>
+            <div class="form-group" style="margin-bottom: 10px;"><textarea id="event-description" rows="2" placeholder="Description" required style="width: 100%; padding: 8px;"></textarea></div>
+            <p id="event-form-status" class="form-status hidden" style="margin: 0 0 12px;"></p>
+            <button class="btn-approve" id="event-save-btn" style="width: 100%; padding: 10px; border:none; border-radius: 6px; cursor: pointer;" onclick="submitAddEvent()">Save Event</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            loadStats();
+            loadBookings();
+            loadRegistrations();
+            loadUsers();
+            loadAdminMentors();
+            loadAdminEvents();
+        });
+
+        function switchTab(tabId, el) {
+            // Update Active Nav
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            el.classList.add('active');
+            
+            // Update Title
+            document.getElementById('page-title').textContent = el.textContent.trim();
+
+            // Update Sections
+            document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
+            document.getElementById('tab-' + tabId).classList.add('active');
+        }
+
+        function setFormStatus(id, message, type = 'error') {
+            const status = document.getElementById(id);
+            if (!status) return;
+            status.textContent = message;
+            status.classList.remove('hidden', 'success-visible', 'error-visible');
+            status.classList.add(type === 'success' ? 'success-visible' : 'error-visible');
+        }
+
+        function clearFormStatus(id) {
+            const status = document.getElementById(id);
+            if (!status) return;
+            status.textContent = '';
+            status.classList.add('hidden');
+            status.classList.remove('success-visible', 'error-visible');
+        }
+
+        async function adminLogout() {
+            await fetch('/admin/logout', { method: 'POST' });
+            window.location.href = '/admin/login';
+        }
+
+        async function loadStats() {
+            try {
+                const res = await fetch('/admin/api/stats');
+                const data = await res.json();
+                document.getElementById('stat-users').textContent = data.total_users;
+                document.getElementById('stat-bookings').textContent = data.total_bookings;
+                document.getElementById('stat-regs').textContent = data.total_registrations;
+                document.getElementById('stat-pending').textContent = data.pending_bookings + data.pending_registrations;
+            } catch (e) {}
+        }
+
+        async function loadBookings() {
+            try {
+                const res = await fetch('/admin/api/bookings');
+                const data = await res.json();
+                const tbody = document.getElementById('bookings-tbody');
+                tbody.innerHTML = '';
+                if(data.length === 0) tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">No bookings found.</td></tr>';
+                data.forEach(b => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td style="color:var(--text-dim);">${(b.created_at || '').slice(0, 10)}</td>
+                            <td>
+                                <strong style="color:#fff; display:block; margin-bottom:4px;">${b.user_name}</strong>
+                                <span style="color:var(--text-dim); font-size:0.8rem;">${b.user_email}</span>
+                            </td>
+                            <td><strong style="color:var(--primary);">${b.mentor_name}</strong></td>
+                            <td>${b.topic}</td>
+                            <td><span class="badge ${b.status}">${b.status}</span></td>
+                            <td>
+                                ${b.status === 'pending' ? `
+                                    <button class="btn-action btn-approve" onclick="updateBooking('${b.id}', 'approved')">Approve</button>
+                                    <button class="btn-action btn-reject" onclick="updateBooking('${b.id}', 'rejected')">Reject</button>
+                                ` : '<span style="color:var(--text-dim); font-size:0.8rem;">Processed</span>'}
+                            </td>
+                        </tr>
+                    `;
+                });
+            } catch (e) {}
+        }
+
+        async function loadRegistrations() {
+            try {
+                const res = await fetch('/admin/api/registrations');
+                const data = await res.json();
+                const tbody = document.getElementById('regs-tbody');
+                tbody.innerHTML = '';
+                if(data.length === 0) tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No registrations found.</td></tr>';
+                data.forEach(r => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td style="color:var(--text-dim);">${(r.created_at || '').slice(0, 10)}</td>
+                            <td>
+                                <strong style="color:#fff; display:block; margin-bottom:4px;">${r.user_name}</strong>
+                                <span style="color:var(--text-dim); font-size:0.8rem;">${r.user_email}</span>
+                            </td>
+                            <td>${r.event_title}</td>
+                            <td><span class="badge ${r.status}">${r.status}</span></td>
+                            <td>
+                                ${r.status === 'pending' ? `
+                                    <button class="btn-action btn-approve" onclick="updateReg('${r.id}', 'confirmed')">Confirm</button>
+                                    <button class="btn-action btn-reject" onclick="updateReg('${r.id}', 'cancelled')">Cancel</button>
+                                ` : '<span style="color:var(--text-dim); font-size:0.8rem;">Processed</span>'}
+                            </td>
+                        </tr>
+                    `;
+                });
+            } catch (e) {}
+        }
+
+        async function loadUsers() {
+            try {
+                const res = await fetch('/admin/api/users');
+                const data = await res.json();
+                const tbody = document.getElementById('users-tbody');
+                tbody.innerHTML = '';
+                if(data.length === 0) tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">No users found.</td></tr>';
+                data.forEach(u => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td style="font-family: monospace; color: var(--text-dim);">${(u.id || u.user_id).slice(0, 8)}...</td>
+                            <td><strong style="color:#fff;">${u.name}</strong></td>
+                            <td style="color:var(--text-dim);">${u.email}</td>
+                        </tr>
+                    `;
+                });
+            } catch (e) {}
+        }
+
+        async function updateBooking(id, status) {
+            await fetch(`/admin/api/booking/${id}/status`, {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status })
+            });
+            loadBookings();
+            loadStats();
+        }
+
+        async function updateReg(id, status) {
+            await fetch(`/admin/api/registration/${id}/status`, {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status })
+            });
+            loadRegistrations();
+            loadStats();
+        }
+
+        // --- Mentor Management ---
+        async function loadAdminMentors() {
+            try {
+                const res = await fetch('/admin/api/mentors');
+                const data = await res.json();
+                const tbody = document.getElementById('manage-mentors-tbody');
+                tbody.innerHTML = '';
+                if(data.length === 0) tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">No mentors found.</td></tr>';
+                data.forEach(m => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td><strong>${m.name}</strong></td>
+                            <td>${m.role}</td>
+                            <td>${m.specialty}</td>
+                            <td>
+                                <button class="btn-action" style="background:var(--secondary);color:white;border:none;" onclick="openEditMentorModal('${m.id}')">Edit</button>
+                                <button class="btn-action btn-reject" onclick="deleteMentor('${m.id}')">Delete</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            } catch (e) {}
+        }
+
+        function openAddMentorModal() {
+            document.getElementById('mentor-modal-title').textContent = "Add Mentor";
+            document.getElementById('edit-mentor-id').value = "";
+            document.getElementById('mentor-name').value = "";
+            document.getElementById('mentor-role').value = "";
+            document.getElementById('mentor-specialty').value = "";
+            document.getElementById('mentor-bio').value = "";
+            document.getElementById('mentor-photo').value = "";
+            clearFormStatus('mentor-form-status');
+            document.getElementById('add-mentor-modal').classList.remove('hidden');
+            document.getElementById('add-mentor-modal').style.display = 'flex';
+        }
+
+        async function openEditMentorModal(id) {
+            const res = await fetch('/admin/api/mentors');
+            const data = await res.json();
+            const m = data.find(item => item.id === id);
+            if(m) {
+                document.getElementById('mentor-modal-title').textContent = "Edit Mentor";
+                document.getElementById('edit-mentor-id').value = m.id;
+                document.getElementById('mentor-name').value = m.name;
+                document.getElementById('mentor-role').value = m.role;
+                document.getElementById('mentor-specialty').value = m.specialty;
+                document.getElementById('mentor-bio').value = m.bio;
+                document.getElementById('mentor-photo').value = m.photo;
+                clearFormStatus('mentor-form-status');
+                document.getElementById('add-mentor-modal').classList.remove('hidden');
+                document.getElementById('add-mentor-modal').style.display = 'flex';
+            }
+        }
+        function closeAddMentorModal() {
+            document.getElementById('add-mentor-modal').classList.add('hidden');
+            document.getElementById('add-mentor-modal').style.display = 'none';
+        }
+        async function submitAddMentor() {
+            const id = document.getElementById('edit-mentor-id').value;
+            const payload = {
+                name: document.getElementById('mentor-name').value.trim(),
+                role: document.getElementById('mentor-role').value.trim(),
+                specialty: document.getElementById('mentor-specialty').value.trim(),
+                bio: document.getElementById('mentor-bio').value.trim(),
+                photo: document.getElementById('mentor-photo').value.trim() || "https://i.pravatar.cc/150",
+                rating: "5.0", sessions: "0"
+            };
+            const missing = [];
+            if (!payload.name) missing.push('name');
+            if (!payload.role) missing.push('role');
+            if (!payload.specialty) missing.push('specialty');
+            if (!payload.bio) missing.push('bio');
+            if (missing.length) {
+                setFormStatus('mentor-form-status', `Please fill: ${missing.join(', ')}.`);
+                return;
+            }
+            if(id) payload.id = id;
+            const res = await fetch('/admin/api/mentor', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            if (!res.ok) {
+                setFormStatus('mentor-form-status', data.error || 'Could not save mentor.');
+                return;
+            }
+            closeAddMentorModal();
+            loadAdminMentors();
+        }
+        async function deleteMentor(id) {
+            if(confirm("Are you sure?")) {
+                await fetch(`/admin/api/mentor/${id}`, { method: 'DELETE' });
+                loadAdminMentors();
+            }
+        }
+
+        // --- Event Management ---
+        async function loadAdminEvents() {
+            try {
+                const res = await fetch('/admin/api/events');
+                const data = await res.json();
+                const tbody = document.getElementById('manage-events-tbody');
+                tbody.innerHTML = '';
+                if(data.length === 0) tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">No events found.</td></tr>';
+                data.forEach(e => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td><strong>${e.title}</strong><br><span style="font-size:0.8rem;color:var(--text-dim)">${e.type}</span></td>
+                            <td>${e.date} at ${e.time}</td>
+                            <td><span class="badge ${e.status === 'closed' ? 'rejected' : 'approved'}">${e.status}</span></td>
+                            <td>
+                                <button class="btn-action" style="background:var(--secondary);color:white;border:none;" onclick="openEditEventModal('${e.id}')">Edit</button>
+                                <button class="btn-action btn-approve" onclick="toggleEventStatus('${e.id}', '${e.status === 'closed' ? 'upcoming' : 'closed'}')">${e.status === 'closed' ? 'Open' : 'Close'}</button>
+                                <button class="btn-action btn-reject" onclick="deleteEvent('${e.id}')">Delete</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            } catch (err) {}
+        }
+
+        function openAddEventModal() {
+            document.getElementById('event-modal-title').textContent = "Add Event";
+            document.getElementById('edit-event-id').value = "";
+            document.getElementById('event-title').value = "";
+            document.getElementById('event-type').value = "";
+            document.getElementById('event-date').value = "";
+            document.getElementById('event-time').value = "";
+            document.getElementById('event-mentor').value = "";
+            document.getElementById('event-spots').value = "";
+            document.getElementById('event-description').value = "";
+            clearFormStatus('event-form-status');
+            document.getElementById('add-event-modal').classList.remove('hidden');
+            document.getElementById('add-event-modal').style.display = 'flex';
+        }
+
+        async function openEditEventModal(id) {
+            const res = await fetch('/admin/api/events');
+            const data = await res.json();
+            const e = data.find(item => item.id === id);
+            if(e) {
+                document.getElementById('event-modal-title').textContent = "Edit Event";
+                document.getElementById('edit-event-id').value = e.id;
+                document.getElementById('event-title').value = e.title;
+                document.getElementById('event-type').value = e.type;
+                document.getElementById('event-date').value = e.date;
+                document.getElementById('event-time').value = e.time;
+                document.getElementById('event-mentor').value = e.mentor;
+                document.getElementById('event-spots').value = e.spots;
+                document.getElementById('event-description').value = e.description;
+                clearFormStatus('event-form-status');
+                document.getElementById('add-event-modal').classList.remove('hidden');
+                document.getElementById('add-event-modal').style.display = 'flex';
+            }
+        }
+        function closeAddEventModal() {
+            document.getElementById('add-event-modal').classList.add('hidden');
+            document.getElementById('add-event-modal').style.display = 'none';
+        }
+        async function submitAddEvent() {
+            const id = document.getElementById('edit-event-id').value;
+            const payload = {
+                title: document.getElementById('event-title').value.trim(),
+                type: document.getElementById('event-type').value.trim(),
+                date: document.getElementById('event-date').value.trim(),
+                time: document.getElementById('event-time').value.trim(),
+                mentor: document.getElementById('event-mentor').value.trim(),
+                spots: document.getElementById('event-spots').value.trim(),
+                description: document.getElementById('event-description').value.trim(),
+                status: 'upcoming'
+            };
+            const missing = [];
+            if (!payload.title) missing.push('title');
+            if (!payload.type) missing.push('type');
+            if (!payload.date) missing.push('date');
+            if (!payload.time) missing.push('time');
+            if (!payload.mentor) missing.push('mentor');
+            if (!payload.spots) missing.push('total spots');
+            if (!payload.description) missing.push('description');
+            if (missing.length) {
+                setFormStatus('event-form-status', `Please fill: ${missing.join(', ')}.`);
+                return;
+            }
+            if (Number(payload.spots) <= 0) {
+                setFormStatus('event-form-status', 'Total spots must be greater than zero.');
+                return;
+            }
+            if(id) {
+                payload.id = id;
+            } else {
+                payload.registered = 0;
+            }
+            const res = await fetch('/admin/api/event', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            if (!res.ok) {
+                setFormStatus('event-form-status', data.error || 'Could not save event.');
+                return;
+            }
+            closeAddEventModal();
+            loadAdminEvents();
+        }
+        async function deleteEvent(id) {
+            if(confirm("Are you sure?")) {
+                await fetch(`/admin/api/event/${id}`, { method: 'DELETE' });
+                loadAdminEvents();
+            }
+        }
+        async function toggleEventStatus(id, newStatus) {
+            // Need to update the whole event, so we first fetch events, find it, update status, and POST.
+            // A small hack: just get current events from the DOM or fetch again.
+            const res = await fetch('/admin/api/events');
+            const data = await res.json();
+            const ev = data.find(e => e.id === id);
+            if(ev) {
+                ev.status = newStatus;
+                await fetch('/admin/api/event', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(ev)
+                });
+                loadAdminEvents();
+            }
+        }
+    </script>
+</body>
+</html>

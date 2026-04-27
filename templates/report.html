@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ record.idea_name }} Report</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="report-body">
+    <main class="report-main">
+        <section class="report-shell">
+            <div class="report-toolbar no-print">
+                <button type="button" class="glow-button" onclick="window.print()">Save as PDF</button>
+                <a href="/dashboard" class="btn-dashboard report-link">Back to Dashboard</a>
+            </div>
+
+            <article class="report-card">
+                <div class="report-header">
+                    <div>
+                        <span class="page-kicker">Founder Report</span>
+                        <h1>{{ record.idea_name }}</h1>
+                        <p class="page-lead">{{ record.description }}</p>
+                    </div>
+                    <div class="report-score">
+                        <span>Idea Score</span>
+                        <strong>{{ record.analysis.idea_score }}/10</strong>
+                        <small>{{ record.analysis.confidence }}</small>
+                    </div>
+                </div>
+
+                <div class="report-meta">
+                    <div><strong>Target Audience:</strong> {{ record.target_users }}</div>
+                    <div><strong>Generated:</strong> {{ record.created_at[:19].replace('T', ' ') }}</div>
+                </div>
+
+                <section class="report-section">
+                    <h2>Assessment</h2>
+                    <p>{{ record.analysis.justification }}</p>
+                </section>
+
+                <section class="report-grid">
+                    <div class="report-panel">
+                        <h2>Strengths</h2>
+                        <ul>
+                            {% for item in record.analysis.strengths %}
+                            <li>{{ item }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="report-panel">
+                        <h2>Weaknesses</h2>
+                        <ul>
+                            {% for item in record.analysis.weaknesses %}
+                            <li>{{ item }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="report-panel">
+                        <h2>Market Gaps</h2>
+                        <ul>
+                            {% for item in record.analysis.market_gaps %}
+                            <li>{{ item }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="report-panel">
+                        <h2>Improvements</h2>
+                        <ul>
+                            {% for item in record.analysis.improvements %}
+                            <li>{{ item }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </section>
+
+                <section class="report-section">
+                    <h2>Competitor Snapshot</h2>
+                    <div class="competitor-list">
+                        {% for competitor in record.analysis.competitors %}
+                        <div class="competitor-item">
+                            <strong>{{ competitor.name }}</strong>
+                            <p>{{ competitor.description }}</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </section>
+            </article>
+        </section>
+    </main>
+
+    {% if autoprint %}
+    <script>
+        window.addEventListener('load', () => window.print());
+    </script>
+    {% endif %}
+</body>
+</html>

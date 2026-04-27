@@ -1,0 +1,8 @@
+flask
+flask-cors
+pymongo
+openai
+firecrawl-py
+python-dotenv
+pydantic
+requests

@@ -1,0 +1,50 @@
+[
+    {
+        "id": "event-1",
+        "title": "Idea-to-MVP in 48 Hours",
+        "type": "Free Bootcamp",
+        "date": "2026-05-10",
+        "time": "10:00 AM IST",
+        "description": "A hands-on weekend bootcamp where you go from a raw idea to a working prototype. Mentors guide you through validation, design, and building.",
+        "mentor": "Priya Sharma",
+        "spots": 50,
+        "registered": 32,
+        "status": "upcoming"
+    },
+    {
+        "id": "event-2",
+        "title": "Pitch Perfect: Craft Your Story",
+        "type": "Workshop",
+        "date": "2026-05-17",
+        "time": "3:00 PM IST",
+        "description": "Learn to build a compelling pitch deck that investors actually read. Live teardown of real decks with feedback.",
+        "mentor": "Rahul Verma",
+        "spots": 30,
+        "registered": 18,
+        "status": "upcoming"
+    },
+    {
+        "id": "event-3",
+        "title": "Growth Hacking for Zero-Budget Startups",
+        "type": "Free Bootcamp",
+        "date": "2026-06-01",
+        "time": "11:00 AM IST",
+        "description": "Discover organic growth tactics that actually work. No paid ads, no big budgets — just smart execution.",
+        "mentor": "Kavitha Nair",
+        "spots": 75,
+        "registered": 41,
+        "status": "upcoming"
+    },
+    {
+        "id": "event-4",
+        "title": "Building AI Products 101",
+        "type": "Masterclass",
+        "date": "2026-04-15",
+        "time": "2:00 PM IST",
+        "description": "From choosing the right model to deploying at scale — a complete walkthrough of building AI-first products.",
+        "mentor": "Arjun Reddy",
+        "spots": 40,
+        "registered": 40,
+        "status": "completed"
+    }
+]

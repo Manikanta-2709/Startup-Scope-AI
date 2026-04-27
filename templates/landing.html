@@ -1,0 +1,214 @@
+{% extends "base.html" %}
+{% block title %}Turn Your Ideas into Real Startups with AI{% endblock %}
+{% block content %}
+
+<section class="hero landing-hero parallax-hero">
+    <div class="hero-content">
+        <div class="badge reveal">Introducing StartupScope v5.0</div>
+        <h1 class="reveal" data-parallax="0.2">Turn Your Ideas into <br><span class="highlight-text">Clear Founder Decisions</span></h1>
+        <p class="hero-subtitle reveal" data-delay="100">Validate startup concepts, compare competitors, uncover market gaps, and turn rough thinking into focused next steps in minutes.</p>
+
+        <div class="hero-input-container reveal" data-delay="200">
+            <div class="interactive-input-box glass">
+                <input type="text" id="hero-startup-idea" placeholder="Type your startup idea here (e.g. Uber for dog walking)...">
+                <button class="glow-button" onclick="startGeneration()">Start Validation</button>
+            </div>
+            <div id="typing-indicator" class="typing-indicator hidden">
+                <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                <span class="thinking-text">Preparing your founder workspace...</span>
+            </div>
+        </div>
+    </div>
+    <div class="hero-decor decor-1"></div>
+    <div class="hero-decor decor-2"></div>
+</section>
+
+<section class="trust-section reveal">
+    <div class="trust-container">
+        <div class="trust-item">
+            <span class="trust-icon">Insight</span>
+            <div class="trust-text">
+                <h4>AI-Powered Review</h4>
+                <p>Structured analysis across strengths, weaknesses, risks, and opportunity areas.</p>
+            </div>
+        </div>
+        <div class="trust-item">
+            <span class="trust-icon">Clarity</span>
+            <div class="trust-text">
+                <h4>Practical Founder Output</h4>
+                <p>Actionable feedback you can use before spending time on product, GTM, or fundraising.</p>
+            </div>
+        </div>
+        <div class="trust-item">
+            <span class="trust-icon">Privacy</span>
+            <div class="trust-text">
+                <h4>Secure Workspace</h4>
+                <p>Your account, validations, bookings, and reports stay tied to your own workspace.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="landing-section" id="how-it-works">
+    <div class="section-header">
+        <h2 class="section-heading reveal">How it Works</h2>
+        <p class="section-sub reveal">A lightweight workflow for founders who want sharper decisions, not generic hype.</p>
+    </div>
+    <div class="steps-grid">
+        <div class="step-card reveal">
+            <div class="step-number">1</div>
+            <h3>Describe the Idea</h3>
+            <p>Capture the startup name, target audience, and the problem you want to solve.</p>
+        </div>
+        <div class="step-card reveal">
+            <div class="step-number">2</div>
+            <h3>Run Analysis</h3>
+            <p>Review competitors, strengths, weaknesses, market gaps, and possible improvements.</p>
+        </div>
+        <div class="step-card reveal">
+            <div class="step-number">3</div>
+            <h3>Act on the Output</h3>
+            <p>Save reports, compare versions, continue the conversation in AI chat, or book a mentor.</p>
+        </div>
+    </div>
+</section>
+
+<section class="landing-section" id="features">
+    <div class="section-header">
+        <h2 class="section-heading reveal">Features Built for Founders</h2>
+        <p class="section-sub reveal">Everything currently in the product is focused on validation, iteration, and practical follow-through.</p>
+    </div>
+    <div class="bento-grid">
+        <div class="bento-item item-large reveal">
+            <div class="bento-icon">Focus</div>
+            <h3>Idea Breakdown</h3>
+            <p>Turn a rough concept into a clear founder readout with strengths, weaknesses, and the right questions to ask next.</p>
+            <div class="bento-visual idea-visual"></div>
+        </div>
+        <div class="bento-item reveal">
+            <div class="bento-icon">Gap</div>
+            <h3>Market Gaps</h3>
+            <p>Spot user segments and underserved problems that may be easier to win than crowded obvious markets.</p>
+        </div>
+        <div class="bento-item reveal">
+            <div class="bento-icon">Compete</div>
+            <h3>Competitor Insights</h3>
+            <p>Identify direct and indirect competition before you build the wrong differentiator.</p>
+        </div>
+        <div class="bento-item reveal">
+            <div class="bento-icon">Iterate</div>
+            <h3>Version Comparison</h3>
+            <p>Update an idea, re-run analysis, and compare how your thinking evolves over time.</p>
+        </div>
+        <div class="bento-item item-medium reveal">
+            <div class="bento-icon">Score</div>
+            <h3>AI Startup Score</h3>
+            <p>A critical 10-point score gives you a fast signal on how viable the idea looks right now.</p>
+            <div class="bento-visual score-visual"></div>
+        </div>
+    </div>
+</section>
+
+<section class="landing-section" id="live-demo">
+    <div class="section-header">
+        <h2 class="section-heading reveal">Live Analysis Preview</h2>
+        <p class="section-sub reveal">See the kind of founder-facing output StartupScope AI generates today.</p>
+    </div>
+    <div class="demo-container glass reveal">
+        <div class="demo-card">
+            <div class="demo-tag">Validated Result</div>
+            <h3>The Problem</h3>
+            <p>Current urban gardening tools are too complex for beginners with limited balcony space, leading to low retention and poor plant survival.</p>
+            <hr>
+            <h3>The Solution</h3>
+            <p>GardenIA: a modular pot system that automates watering and nutrient delivery while guiding beginners with simple prompts.</p>
+            <hr>
+            <div class="demo-footer">
+                <div class="demo-stat">
+                    <span>Target Market</span>
+                    <strong>Urban Millennials</strong>
+                </div>
+                <div class="demo-stat">
+                    <span>Next Step</span>
+                    <strong>Pilot with balcony gardeners</strong>
+                </div>
+            </div>
+        </div>
+        <div class="demo-dashboard">
+            <div class="dashboard-preview-card glass">
+                <h4>Startup Success Score</h4>
+                <div class="score-circle">8.4</div>
+                <div class="mini-chart">
+                    <div class="bar" style="height: 40%"></div>
+                    <div class="bar" style="height: 60%"></div>
+                    <div class="bar" style="height: 80%"></div>
+                    <div class="bar" style="height: 70%"></div>
+                </div>
+                <p>Strong niche appeal with visible competition and room to sharpen the wedge.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="landing-section" id="testimonials">
+    <h2 class="section-heading reveal">Trusted by Innovators</h2>
+    <div class="testimonials-grid">
+        {% for testimonial in testimonials[:4] %}
+        <div class="testimonial-card reveal">
+            <p class="testimonial-text">"{{ testimonial.text }}"</p>
+            <div class="testimonial-author">
+                <div class="avatar-small">{{ testimonial.name[:2].upper() }}</div>
+                <div>
+                    <strong>{{ testimonial.name }}</strong>
+                    <span>{{ testimonial.role }}</span>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<footer class="site-footer">
+    <div class="footer-grid">
+        <div class="footer-col">
+            <h4>StartupScope AI</h4>
+            <p>Founder validation, report export, mentor booking, and practical next-step analysis in one workspace.</p>
+        </div>
+        <div class="footer-col">
+            <h4>Platform</h4>
+            <a href="#features">Features</a>
+            <a href="#how-it-works">How It Works</a>
+            <a href="/login-page">Login</a>
+        </div>
+        <div class="footer-col">
+            <h4>Legal</h4>
+            <a href="/privacy">Privacy Policy</a>
+            <a href="/terms">Terms of Service</a>
+        </div>
+        <div class="footer-col">
+            <h4>Connect</h4>
+            <a href="/contact">Contact</a>
+            <a href="/mentors">Talk to a Mentor</a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2026 StartupScope AI. Helping founders make clearer decisions.</p>
+    </div>
+</footer>
+
+<script>
+    function startGeneration() {
+        const idea = document.getElementById('hero-startup-idea').value;
+        if (!idea) return alert('Please enter an idea first.');
+
+        localStorage.setItem('startupscope_onboarding_idea', idea);
+        const indicator = document.getElementById('typing-indicator');
+        indicator.classList.remove('hidden');
+
+        setTimeout(() => {
+            window.location.href = '/register-page?idea=' + encodeURIComponent(idea);
+        }, 900);
+    }
+</script>
+
+{% endblock %}

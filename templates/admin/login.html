@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - StartupScope AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { display: flex; justify-content: center; align-items: center; min-height: 100vh; background: var(--bg-main); color: var(--text-main); font-family: 'Inter', sans-serif; margin: 0; }
+        .admin-login-box { background: var(--card-bg); padding: 40px; border-radius: 12px; border: 1px solid var(--border-light); width: 100%; max-width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .admin-login-box h2 { text-align: center; margin-bottom: 25px; color: var(--primary); }
+    </style>
+</head>
+<body>
+    <!-- Animated background for admin too! -->
+    <div class="mesh-background">
+        <div class="morphing-blob blob-1"></div>
+        <div class="morphing-blob blob-3"></div>
+    </div>
+
+    <div class="admin-login-box">
+        <h2>Admin Portal</h2>
+        <form id="admin-login-form">
+            <div class="form-group">
+                <label>Admin Email</label>
+                <input type="email" id="admin-email" required>
+            </div>
+            <div class="form-group">
+                <label>Admin Password</label>
+                <input type="password" id="admin-password" required>
+            </div>
+            <button type="submit" class="btn-primary" style="width: 100%; padding: 12px;">Login</button>
+            <p id="admin-error" style="color: #ef4444; margin-top: 15px; text-align: center; display: none;"></p>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('admin-login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('admin-email').value;
+            const password = document.getElementById('admin-password').value;
+            const error = document.getElementById('admin-error');
+            
+            try {
+                const res = await fetch('/admin/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    window.location.href = '/admin/dashboard';
+                } else {
+                    error.textContent = data.error || 'Login failed';
+                    error.style.display = 'block';
+                }
+            } catch (err) {
+                error.textContent = 'Network error.';
+                error.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

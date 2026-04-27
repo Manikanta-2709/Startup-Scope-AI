@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StartupScope AI | Idea Validator</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="background-overlay"></div>
+    
+    <nav>
+        <div class="logo">🚀 StartupScope <span>AI</span></div>
+        <div class="nav-links">
+            <span id="user-greeting" class="hidden"></span>
+            <button id="login-btn" class="auth-btn">Login</button>
+            <button id="register-btn" class="auth-btn btn-primary">Sign Up</button>
+            <button id="logout-btn" class="auth-btn hidden">Logout</button>
+            <button id="history-btn" class="hidden">View History</button>
+        </div>
+    </nav>
+
+    <!-- Auth Modals -->
+    <div id="auth-overlay" class="auth-overlay hidden">
+        <div class="auth-modal">
+            <button id="close-auth" class="close-btn">&times;</button>
+            <h2 id="auth-title">Login</h2>
+            <form id="auth-form">
+                <div class="form-group hidden" id="name-group">
+                    <label for="auth-name">Full Name</label>
+                    <input type="text" id="auth-name" placeholder="John Doe">
+                </div>
+                <div class="form-group">
+                    <label for="auth-email">Email</label>
+                    <input type="email" id="auth-email" required placeholder="you@example.com">
+                </div>
+                <div class="form-group">
+                    <label for="auth-password">Password</label>
+                    <input type="password" id="auth-password" required placeholder="••••••••">
+                </div>
+                <p id="auth-error" class="error-msg hidden"></p>
+                <button type="submit" id="auth-submit-btn">Login</button>
+            </form>
+            <p class="auth-switch">
+                <span id="auth-switch-text">Don't have an account?</span> 
+                <a href="#" id="auth-switch-link">Sign Up</a>
+            </p>
+        </div>
+    </div>
+
+    <main>
+        <!-- Premium SaaS Landing Hero -->
+        <section class="hero landing-hero">
+            <div class="badge">🚀 v3.0 Live - Smarter, Faster, Sharper</div>
+            <h1>Don't Guess. <span class="highlight-text">Validate.</span></h1>
+            <p class="hero-subtitle">Get AI-powered insights, deep competitor analysis, and pinpoint market gap reports in under 5 seconds.</p>
+            <div class="hero-buttons">
+                <button id="get-started-btn" class="btn-primary auth-btn btn-large">Start Validating For Free</button>
+            </div>
+        </section>
+
+        <!-- Features Grid -->
+        <section class="features" id="features">
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3>Sub-5s Analysis</h3>
+                <p>Powered by advanced local and cloud LLMs, get complete strategic teardowns instantly.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <h3>Niche Competitors</h3>
+                <p>No generic Amazon/Google warnings. Find the real, hidden players in your exact sector.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔍</div>
+                <h3>Market Gaps</h3>
+                <p>Pinpoint exactly which underserved audience is desperately waiting for your product.</p>
+            </div>
+        </section>
+
+        <!-- App Container -->
+        <div class="app-divider">
+            <h2>Your Workspace</h2>
+        </div>
+
+
+        <section class="submission-container">
+            <div class="main-form">
+                <div class="form-group">
+                    <label for="idea-name">Startup Name</label>
+                    <input type="text" id="idea-name" placeholder="e.g. EcoBox, GardenIA...">
+                </div>
+                <div class="form-group">
+                    <label for="target-users">Target Audience</label>
+                    <input type="text" id="target-users" placeholder="e.g. Urban millennials, Small businesses...">
+                </div>
+                <div class="form-group">
+                    <label for="description">Detailed Description</label>
+                    <textarea id="description" rows="4" placeholder="What problem does it solve? How does it work?"></textarea>
+                </div>
+                <button id="validate-btn">Analyze Idea</button>
+            </div>
+        </section>
+
+        <section id="results-section" class="hidden">
+            <div class="section-title" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <h2>Analysis Results</h2>
+                </div>
+                <button id="download-pdf-btn" class="auth-btn btn-primary" onclick="alert('PDF Export feature coming soon!')">📄 Download PDF</button>
+            </div>
+            
+            <div class="results-grid">
+                <!-- Analysis will be injected here -->
+            </div>
+        </section>
+
+        <section id="history-section" class="hidden">
+            <div class="section-title">
+                <h2>Past Validations</h2>
+            </div>
+            <div class="history-list">
+                <!-- History will be injected here -->
+            </div>
+            <button id="close-history">Close History</button>
+        </section>
+    </main>
+
+    <div id="loader" class="hidden">
+        <div class="spinner"></div>
+        <p>Llama 3 is analyzing your market idea locally...</p>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

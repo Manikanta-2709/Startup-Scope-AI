@@ -1,0 +1,42 @@
+[
+    {
+        "id": "mentor-1",
+        "name": "Priya Sharma",
+        "role": "Startup Strategy",
+        "specialty": "B2B SaaS, Go-to-Market",
+        "bio": "Ex-product lead at Zoho. Helped 40+ early-stage startups define their GTM strategy and secure seed funding.",
+        "photo": "https://api.dicebear.com/9.x/notionists/svg?seed=priya",
+        "sessions": 127,
+        "rating": 4.9
+    },
+    {
+        "id": "mentor-2",
+        "name": "Arjun Reddy",
+        "role": "Technical Advisor",
+        "specialty": "AI/ML, System Design",
+        "bio": "Senior ML engineer at a FAANG company. Specializes in helping founders build scalable AI products from scratch.",
+        "photo": "https://api.dicebear.com/9.x/notionists/svg?seed=arjun",
+        "sessions": 89,
+        "rating": 4.8
+    },
+    {
+        "id": "mentor-3",
+        "name": "Kavitha Nair",
+        "role": "Growth & Marketing",
+        "specialty": "D2C, Performance Marketing",
+        "bio": "Built growth engines for 3 funded startups. Expert in organic acquisition, retention loops, and community-led growth.",
+        "photo": "https://api.dicebear.com/9.x/notionists/svg?seed=kavitha",
+        "sessions": 203,
+        "rating": 4.9
+    },
+    {
+        "id": "mentor-4",
+        "name": "Rahul Verma",
+        "role": "Finance & Fundraising",
+        "specialty": "Pitch Decks, VC Relations",
+        "bio": "Angel investor and ex-CFO. Has reviewed 500+ pitch decks and helped startups raise over $12M collectively.",
+        "photo": "https://api.dicebear.com/9.x/notionists/svg?seed=rahul",
+        "sessions": 156,
+        "rating": 4.7
+    }
+]
